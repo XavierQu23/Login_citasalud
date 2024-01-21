@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from Utils.db import db 
 from Models.usuario import Usuario
@@ -20,7 +20,21 @@ def home():
     db.session.add(new_usuario)
     db.session.commit()
     return ' new hello world'
-    
+
+
+
+@app.route('/login',methods=['POST','GET'])
+def index():
+    usuarios = Usuario.query.all()
+    if request.method== "POST":
+        email= request.form['email']
+        clave= request.form['clave']
+        for usuario in usuarios:
+            if usuario.email== email and usuario.clave==clave:
+                return render_template("index.html")  
+            else:
+                return render_template("login.html")
+    return render_template("login.html")
 
 @app.route('/registro')
 def formulario():
